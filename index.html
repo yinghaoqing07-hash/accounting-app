@@ -2,7 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#4f46e5">
     <title>智能记账</title>
     <style>
         * {
@@ -489,7 +492,7 @@
             eye: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
             eyeOff: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>',
             lock: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
-            dollar: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+            dollar: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="4" y="18" font-size="16" font-weight="bold">€</text></svg>',
             up: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>',
             down: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 18l-9.5-9.5-5 5L1 6"/><path d="M17 18h6v-6"/></svg>',
             edit: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
@@ -724,39 +727,20 @@
                             <span style="color:#6b7280;">总资产</span>
                             ${icons.dollar}
                         </div>
-                        <div class="asset-amount">¥${totalAssets.toFixed(2)}</div>
+                        <div class="asset-amount">€${totalAssets.toFixed(2)}</div>
                     </div>
                     
                     <div class="pool-grid">
                         <div class="pool-card pool-green">
                             <div class="pool-title">发展金</div>
-                            <div class="pool-amount">¥${state.developmentPool.toFixed(2)}</div>
+                            <div class="pool-amount">€${state.developmentPool.toFixed(2)}</div>
                             <div class="pool-subtitle">90%收入</div>
                         </div>
                         <div class="pool-card pool-blue">
                             <div class="pool-title">可支配金</div>
-                            <div class="pool-amount">¥${state.discretionaryPool.toFixed(2)}</div>
+                            <div class="pool-amount">€${state.discretionaryPool.toFixed(2)}</div>
                             <div class="pool-subtitle">10%收入</div>
                         </div>
-                    </div>
-                    
-                    <div class="card">
-                        <h3 class="card-title">资产修正</h3>
-                        <div style="margin-bottom:12px;">
-                            <select id="correctionPool" onchange="updateCorrectionPool(this.value)">
-                                <option value="development" ${state.correctionPool === 'development' ? 'selected' : ''}>发展金</option>
-                                <option value="discretionary" ${state.correctionPool === 'discretionary' ? 'selected' : ''}>可支配金</option>
-                            </select>
-                        </div>
-                        <div style="margin-bottom:12px;">
-                            <input 
-                                type="number" 
-                                id="correctionAmount"
-                                placeholder="输入修正后的金额"
-                                value="${state.correctionAmount}"
-                            />
-                        </div>
-                        <button class="btn btn-orange" onclick="handleCorrection()">执行修正</button>
                     </div>
                     
                     <div class="card">
@@ -775,90 +759,11 @@
                                         </div>
                                     </div>
                                     <div class="transaction-amount amount-${tx.type === 'income' ? 'green' : tx.type === 'correction' ? 'orange' : 'red'}">
-                                        ${tx.type === 'income' ? '+' : tx.type === 'correction' ? '=' : '-'}¥${tx.amount.toFixed(2)}
+                                        ${tx.type === 'income' ? '+' : tx.type === 'correction' ? '=' : '-'}€${tx.amount.toFixed(2)}
                                     </div>
                                 </div>
                             `).join('')
                         }
-                    </div>
-                `;
-                
-                setTimeout(() => {
-                    const corrAmountInput = document.getElementById('correctionAmount');
-                    if (corrAmountInput) {
-                        corrAmountInput.addEventListener('input', (e) => {
-                            state.correctionAmount = e.target.value;
-                        });
-                    }
-                }, 0);
-            } else if (state.currentPage === 'add') {
-                content = `
-                    <div class="card">
-                        <div class="type-selector">
-                            <button 
-                                class="type-btn ${state.recordType === 'income' ? 'active-green' : 'inactive'}"
-                                onclick="setRecordType('income')"
-                            >收入</button>
-                            <button 
-                                class="type-btn ${state.recordType === 'expense' ? 'active-red' : 'inactive'}"
-                                onclick="setRecordType('expense')"
-                            >支出</button>
-                        </div>
-                        
-                        <div style="margin-bottom:20px;">
-                            <label class="label">金额</label>
-                            <div class="amount-input-wrapper">
-                                <span class="amount-symbol">¥</span>
-                                <input 
-                                    type="number" 
-                                    id="amountInput"
-                                    class="amount-input"
-                                    placeholder="0.00"
-                                    value="${state.amount}"
-                                />
-                            </div>
-                        </div>
-                        
-                        <div style="margin-bottom:20px;">
-                            <label class="label">描述</label>
-                            <input 
-                                type="text" 
-                                id="descInput"
-                                placeholder="${state.recordType === 'income' ? '收入来源' : '支出用途'}"
-                                value="${state.description}"
-                            />
-                        </div>
-                        
-                        ${state.recordType === 'expense' ? `
-                            <div style="margin-bottom:20px;">
-                                <label class="label">使用资金池</label>
-                                <select id="poolSelect" onchange="updateSelectedPool(this.value)">
-                                    <option value="discretionary" ${state.selectedPool === 'discretionary' ? 'selected' : ''}>
-                                        可支配金 (¥${state.discretionaryPool.toFixed(2)})
-                                    </option>
-                                    <option value="development" ${state.selectedPool === 'development' ? 'selected' : ''}>
-                                        发展金 (¥${state.developmentPool.toFixed(2)})
-                                    </option>
-                                </select>
-                            </div>
-                        ` : ''}
-                        
-                        ${state.recordType === 'income' ? `
-                            <div class="info-box">
-                                <p class="info-text">
-                                    💡 收入将自动分配：<br/>
-                                    • 90% → 发展金<br/>
-                                    • 10% → 可支配金
-                                </p>
-                            </div>
-                        ` : ''}
-                        
-                        <button 
-                            class="btn ${state.recordType === 'income' ? 'btn-green' : 'btn-red'}"
-                            onclick="handleAddRecord()"
-                        >
-                            添加${state.recordType === 'income' ? '收入' : '支出'}
-                        </button>
                     </div>
                 `;
                 
@@ -900,7 +805,7 @@
                                 </div>
                                 <div class="transaction-right">
                                     <div class="transaction-amount amount-${tx.type === 'income' ? 'green' : tx.type === 'correction' ? 'orange' : 'red'}">
-                                        ${tx.type === 'income' ? '+' : tx.type === 'correction' ? '=' : '-'}¥${tx.amount.toFixed(2)}
+                                        ${tx.type === 'income' ? '+' : tx.type === 'correction' ? '=' : '-'}€${tx.amount.toFixed(2)}
                                     </div>
                                     <button class="delete-btn" onclick="deleteTransaction(${tx.id})">
                                         ${icons.trash}
@@ -911,6 +816,25 @@
                     `).join('');
             } else if (state.currentPage === 'settings') {
                 content = `
+                    <div class="card">
+                        <h3 class="card-title">资产修正</h3>
+                        <div style="margin-bottom:12px;">
+                            <select id="correctionPool" onchange="updateCorrectionPool(this.value)">
+                                <option value="development" ${state.correctionPool === 'development' ? 'selected' : ''}>发展金</option>
+                                <option value="discretionary" ${state.correctionPool === 'discretionary' ? 'selected' : ''}>可支配金</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <input 
+                                type="number" 
+                                id="correctionAmount"
+                                placeholder="输入修正后的金额"
+                                value="${state.correctionAmount}"
+                            />
+                        </div>
+                        <button class="btn btn-orange" onclick="handleCorrection()">执行修正</button>
+                    </div>
+                    
                     <div class="card">
                         <h3 class="card-title">修改密码</h3>
                         <div style="margin-bottom:12px;">
@@ -950,6 +874,13 @@
                 `;
                 
                 setTimeout(() => {
+                    const corrAmountInput = document.getElementById('correctionAmount');
+                    if (corrAmountInput) {
+                        corrAmountInput.addEventListener('input', (e) => {
+                            state.correctionAmount = e.target.value;
+                        });
+                    }
+                    
                     const newPwdInput = document.getElementById('newPwdInput');
                     const confirmPwdInput = document.getElementById('confirmPwdInput');
                     
