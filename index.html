@@ -62,10 +62,6 @@
             margin: 0 auto 20px;
         }
         
-        .login-icon svg {
-            stroke: white;
-        }
-        
         h1 {
             font-size: 28px;
             color: #1f2937;
@@ -197,6 +193,13 @@
             margin-bottom: 16px;
         }
         
+        .sub-pool-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
         .pool-card {
             padding: 24px;
             border-radius: 20px;
@@ -227,6 +230,55 @@
         .pool-subtitle {
             font-size: 12px;
             opacity: 0.75;
+        }
+        
+        .sub-pool-card {
+            padding: 16px;
+            border-radius: 16px;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .sub-pool-vwce {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .sub-pool-cndx {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        }
+        
+        .sub-pool-btc {
+            background: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%);
+        }
+        
+        .sub-pool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .sub-pool-name {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        
+        .sub-pool-percent {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+        
+        .sub-pool-amount {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .sub-pool-stats {
+            font-size: 11px;
+            opacity: 0.85;
+            line-height: 1.5;
         }
         
         .card-title {
@@ -391,6 +443,59 @@
             line-height: 1.6;
         }
         
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .quick-btn {
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #374151;
+        }
+        
+        .quick-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .quick-btn-vwce {
+            border-color: #10b981;
+            color: #10b981;
+        }
+        
+        .quick-btn-vwce:hover {
+            background: #10b981;
+            color: white;
+        }
+        
+        .quick-btn-cndx {
+            border-color: #34d399;
+            color: #059669;
+        }
+        
+        .quick-btn-cndx:hover {
+            background: #34d399;
+            color: white;
+        }
+        
+        .quick-btn-btc {
+            border-color: #6ee7b7;
+            color: #047857;
+        }
+        
+        .quick-btn-btc:hover {
+            background: #6ee7b7;
+            color: white;
+        }
+        
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -493,7 +598,6 @@
     <div id="root"></div>
     
     <script>
-        // 图标 SVG
         const icons = {
             home: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>',
             plus: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>',
@@ -503,15 +607,13 @@
             eye: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
             eyeOff: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>',
             lock: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
-            dollar: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="4" y="18" font-size="16" font-weight="bold">€</text></svg>',
             up: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>',
             down: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 18l-9.5-9.5-5 5L1 6"/><path d="M17 18h6v-6"/></svg>',
-            edit: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
+            edit: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
             trash: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
             save: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>'
         };
         
-        // 应用状态
         let state = {
             isLoggedIn: false,
             password: '',
@@ -520,6 +622,12 @@
             storedPassword: '123456',
             developmentPool: 0,
             discretionaryPool: 0,
+            vwcePool: 0,
+            cndxPool: 0,
+            btcPool: 0,
+            vwceStats: { totalIncome: 0, totalExpense: 0 },
+            cndxStats: { totalIncome: 0, totalExpense: 0 },
+            btcStats: { totalIncome: 0, totalExpense: 0 },
             transactions: [],
             recordType: 'income',
             amount: '',
@@ -531,38 +639,59 @@
             correctionPool: 'development'
         };
         
-        // 加载数据
         function loadData() {
             try {
                 const pwd = localStorage.getItem('password');
                 if (pwd) state.storedPassword = pwd;
-                
+
                 const dev = localStorage.getItem('developmentPool');
                 if (dev) state.developmentPool = parseFloat(dev);
-                
+
                 const disc = localStorage.getItem('discretionaryPool');
                 if (disc) state.discretionaryPool = parseFloat(disc);
                 
+                const vwce = localStorage.getItem('vwcePool');
+                if (vwce) state.vwcePool = parseFloat(vwce);
+                
+                const cndx = localStorage.getItem('cndxPool');
+                if (cndx) state.cndxPool = parseFloat(cndx);
+                
+                const btc = localStorage.getItem('btcPool');
+                if (btc) state.btcPool = parseFloat(btc);
+                
+                const vwceStats = localStorage.getItem('vwceStats');
+                if (vwceStats) state.vwceStats = JSON.parse(vwceStats);
+                
+                const cndxStats = localStorage.getItem('cndxStats');
+                if (cndxStats) state.cndxStats = JSON.parse(cndxStats);
+                
+                const btcStats = localStorage.getItem('btcStats');
+                if (btcStats) state.btcStats = JSON.parse(btcStats);
+
                 const tx = localStorage.getItem('transactions');
                 if (tx) state.transactions = JSON.parse(tx);
-            } catch (e) {
-                console.log('首次使用');
+            } catch (error) {
+                console.log('初次使用');
             }
         }
         
-        // 保存数据
         function saveData() {
             try {
                 localStorage.setItem('password', state.storedPassword);
                 localStorage.setItem('developmentPool', state.developmentPool.toString());
                 localStorage.setItem('discretionaryPool', state.discretionaryPool.toString());
+                localStorage.setItem('vwcePool', state.vwcePool.toString());
+                localStorage.setItem('cndxPool', state.cndxPool.toString());
+                localStorage.setItem('btcPool', state.btcPool.toString());
+                localStorage.setItem('vwceStats', JSON.stringify(state.vwceStats));
+                localStorage.setItem('cndxStats', JSON.stringify(state.cndxStats));
+                localStorage.setItem('btcStats', JSON.stringify(state.btcStats));
                 localStorage.setItem('transactions', JSON.stringify(state.transactions));
-            } catch (e) {
-                console.error('保存失败');
+            } catch (error) {
+                console.error('保存失败:', error);
             }
         }
         
-        // 登录
         function handleLogin() {
             if (state.password === state.storedPassword) {
                 state.isLoggedIn = true;
@@ -573,7 +702,6 @@
             }
         }
         
-        // 添加记录
         function handleAddRecord() {
             if (!state.amount || parseFloat(state.amount) <= 0) {
                 alert('请输入有效金额');
@@ -581,22 +709,59 @@
             }
             
             const amountNum = parseFloat(state.amount);
+            const desc = state.description || (state.recordType === 'income' ? '收入' : '支出');
+            
+            let assetType = null;
+            if (desc.includes('VWCE')) assetType = 'vwce';
+            else if (desc.includes('CNDX')) assetType = 'cndx';
+            else if (desc.includes('BTC')) assetType = 'btc';
+            
             const newTx = {
                 id: Date.now(),
                 type: state.recordType,
                 amount: amountNum,
-                description: state.description || (state.recordType === 'income' ? '收入' : '支出'),
+                description: desc,
                 pool: state.recordType === 'income' ? 'auto' : state.selectedPool,
+                assetType: assetType,
                 date: new Date().toLocaleString('zh-CN')
             };
             
             if (state.recordType === 'income') {
-                state.developmentPool += amountNum * 0.9;
-                state.discretionaryPool += amountNum * 0.1;
+                const devAmount = amountNum * 0.9;
+                const discAmount = amountNum * 0.1;
+                state.developmentPool += devAmount;
+                state.discretionaryPool += discAmount;
+                
+                const vwceAmount = devAmount * 0.6;
+                const cndxAmount = devAmount * 0.35;
+                const btcAmount = devAmount * 0.05;
+                
+                state.vwcePool += vwceAmount;
+                state.cndxPool += cndxAmount;
+                state.btcPool += btcAmount;
+                
+                if (assetType === 'vwce') {
+                    state.vwceStats.totalIncome += amountNum;
+                } else if (assetType === 'cndx') {
+                    state.cndxStats.totalIncome += amountNum;
+                } else if (assetType === 'btc') {
+                    state.btcStats.totalIncome += amountNum;
+                }
             } else {
                 if (state.selectedPool === 'development') {
                     if (state.developmentPool >= amountNum) {
                         state.developmentPool -= amountNum;
+                        
+                        if (assetType === 'vwce' && state.vwcePool >= amountNum) {
+                            state.vwcePool -= amountNum;
+                            state.vwceStats.totalExpense += amountNum;
+                        } else if (assetType === 'cndx' && state.cndxPool >= amountNum) {
+                            state.cndxPool -= amountNum;
+                            state.cndxStats.totalExpense += amountNum;
+                        } else if (assetType === 'btc' && state.btcPool >= amountNum) {
+                            state.btcPool -= amountNum;
+                            state.btcStats.totalExpense += amountNum;
+                        }
                     } else {
                         alert('发展金余额不足！');
                         return;
@@ -619,7 +784,6 @@
             render();
         }
         
-        // 资产修正
         function handleCorrection() {
             if (!state.correctionAmount) {
                 alert('请输入修正金额');
@@ -649,7 +813,6 @@
             alert('资产修正成功！');
         }
         
-        // 删除交易
         function deleteTransaction(id) {
             if (confirm('确定要删除这条记录吗？')) {
                 state.transactions = state.transactions.filter(t => t.id !== id);
@@ -658,7 +821,6 @@
             }
         }
         
-        // 修改密码
         function handleChangePassword() {
             if (!state.newPassword || !state.confirmPassword) {
                 alert('请输入新密码');
@@ -676,7 +838,6 @@
             alert('密码修改成功！');
         }
         
-        // 退出登录
         function handleLogout() {
             if (confirm('确定要退出登录吗？')) {
                 state.isLoggedIn = false;
@@ -685,7 +846,6 @@
             }
         }
         
-        // 渲染函数
         function render() {
             const root = document.getElementById('root');
             
@@ -728,6 +888,7 @@
             }
             
             const totalAssets = state.developmentPool + state.discretionaryPool;
+            const totalSubPools = state.vwcePool + state.cndxPool + state.btcPool;
             
             let content = '';
             
@@ -746,10 +907,56 @@
                             <div class="pool-amount">€${state.developmentPool.toFixed(2)}</div>
                             <div class="pool-subtitle">90%收入</div>
                         </div>
+                        
                         <div class="pool-card pool-blue">
                             <div class="pool-title">可支配金</div>
                             <div class="pool-amount">€${state.discretionaryPool.toFixed(2)}</div>
                             <div class="pool-subtitle">10%收入</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">发展金资产分布</h3>
+                        <div class="sub-pool-grid">
+                            <div class="sub-pool-card sub-pool-vwce">
+                                <div class="sub-pool-header">
+                                    <div class="sub-pool-name">VWCE</div>
+                                    <div class="sub-pool-percent">60%</div>
+                                </div>
+                                <div class="sub-pool-amount">€${state.vwcePool.toFixed(2)}</div>
+                                <div class="sub-pool-stats">
+                                    收入: €${state.vwceStats.totalIncome.toFixed(2)}<br/>
+                                    支出: €${state.vwceStats.totalExpense.toFixed(2)}<br/>
+                                    盈亏: €${(state.vwceStats.totalIncome - state.vwceStats.totalExpense).toFixed(2)}
+                                </div>
+                            </div>
+                            <div class="sub-pool-card sub-pool-cndx">
+                                <div class="sub-pool-header">
+                                    <div class="sub-pool-name">CNDX</div>
+                                    <div class="sub-pool-percent">35%</div>
+                                </div>
+                                <div class="sub-pool-amount">€${state.cndxPool.toFixed(2)}</div>
+                                <div class="sub-pool-stats">
+                                    收入: €${state.cndxStats.totalIncome.toFixed(2)}<br/>
+                                    支出: €${state.cndxStats.totalExpense.toFixed(2)}<br/>
+                                    盈亏: €${(state.cndxStats.totalIncome - state.cndxStats.totalExpense).toFixed(2)}
+                                </div>
+                            </div>
+                            <div class="sub-pool-card sub-pool-btc">
+                                <div class="sub-pool-header">
+                                    <div class="sub-pool-name">BTC</div>
+                                    <div class="sub-pool-percent">5%</div>
+                                </div>
+                                <div class="sub-pool-amount">€${state.btcPool.toFixed(2)}</div>
+                                <div class="sub-pool-stats">
+                                    收入: €${state.btcStats.totalIncome.toFixed(2)}<br/>
+                                    支出: €${state.btcStats.totalExpense.toFixed(2)}<br/>
+                                    盈亏: €${(state.btcStats.totalIncome - state.btcStats.totalExpense).toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;color:#6b7280;font-size:13px;padding-top:12px;border-top:1px solid #e5e7eb;margin-top:8px;">
+                            总投资: €${totalSubPools.toFixed(2)} | 现金余额: €${(state.developmentPool - totalSubPools).toFixed(2)}
                         </div>
                     </div>
                     
@@ -776,7 +983,6 @@
                         }
                     </div>
                 `;
-                
             } else if (state.currentPage === 'add') {
                 content = `
                     <div class="card">
@@ -789,6 +995,21 @@
                                 class="type-btn ${state.recordType === 'expense' ? 'active-red' : 'inactive'}"
                                 onclick="setRecordType('expense')"
                             >支出</button>
+                        </div>
+                        
+                        <div style="margin-bottom:16px;">
+                            <label class="label">快捷操作</label>
+                            <div class="quick-buttons">
+                                <button class="quick-btn quick-btn-vwce" onclick="fillQuick('VWCE')">
+                                    ${state.recordType === 'income' ? '卖出' : '买入'} VWCE
+                                </button>
+                                <button class="quick-btn quick-btn-cndx" onclick="fillQuick('CNDX')">
+                                    ${state.recordType === 'income' ? '卖出' : '买入'} CNDX
+                                </button>
+                                <button class="quick-btn quick-btn-btc" onclick="fillQuick('BTC')">
+                                    ${state.recordType === 'income' ? '卖出' : '买入'} BTC
+                                </button>
+                            </div>
                         </div>
                         
                         <div style="margin-bottom:20px;">
@@ -833,7 +1054,7 @@
                             <div class="info-box">
                                 <p class="info-text">
                                     💡 收入将自动分配：<br/>
-                                    • 90% → 发展金<br/>
+                                    • 90% → 发展金 (VWCE 60%, CNDX 35%, BTC 5%)<br/>
                                     • 10% → 可支配金
                                 </p>
                             </div>
@@ -947,7 +1168,7 @@
                         <p style="color:#6b7280;font-size:14px;line-height:1.8;">
                             • 版本: 1.0.0<br/>
                             • 数据自动保存<br/>
-                            • 收入自动分配比例：发展金90%，可支配金10%
+                            • 收入自动分配：发展金90% (VWCE 60%, CNDX 35%, BTC 5%)，可支配金10%
                         </p>
                     </div>
                     
@@ -1017,14 +1238,6 @@
             `;
         }
         
-        // 快速添加支出
-        function quickExpense() {
-            state.recordType = 'expense';
-            state.currentPage = 'add';
-            render();
-        }
-        
-        // 全局函数
         function togglePassword() {
             state.showPassword = !state.showPassword;
             render();
@@ -1048,7 +1261,22 @@
             state.correctionPool = pool;
         }
         
-        // 初始化
+        function quickExpense() {
+            state.recordType = 'expense';
+            state.currentPage = 'add';
+            render();
+        }
+        
+        function fillQuick(asset) {
+            const action = state.recordType === 'income' ? '卖出' : '买入';
+            state.description = `${action} ${asset}`;
+            render();
+            setTimeout(() => {
+                const amountInput = document.getElementById('amountInput');
+                if (amountInput) amountInput.focus();
+            }, 100);
+        }
+        
         loadData();
         render();
     </script>
