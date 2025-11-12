@@ -648,701 +648,688 @@
 <body>
     <div id="root"></div>
     
-<template>
-  <div class="app">
-    <div v-if="!isLoggedIn" class="login-page">
-      <div class="login-card">
-        <div class="login-icon" v-html="icons.lock"></div>
-        <h1>智能记账</h1>
-        <p class="subtitle">请输入密码登录</p>
+    <script>
+        const icons = {
+            home: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>',
+            plus: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>',
+            minus: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>',
+            history: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>',
+            settings: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+            eye: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+            eyeOff: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>',
+            lock: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+            up: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>',
+            down: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 18l-9.5-9.5-5 5L1 6"/><path d="M17 18h6v-6"/></svg>',
+            edit: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
+            trash: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
+            save: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>'
+        };
+        
+        let state = {
+            isLoggedIn: false,
+            password: '',
+            showPassword: false,
+            currentPage: 'home',
+            storedPassword: '123456',
+            developmentPool: 0,
+            discretionaryPool: 0,
+            vwcePool: 0,
+            cndxPool: 0,
+            btcPool: 0,
+            vwceStats: { totalIncome: 0, totalExpense: 0 },
+            cndxStats: { totalIncome: 0, totalExpense: 0 },
+            btcStats: { totalIncome: 0, totalExpense: 0 },
+            transactions: [],
+            recordType: 'income',
+            amount: '',
+            description: '',
+            selectedPool: 'discretionary',
+            newPassword: '',
+            confirmPassword: '',
+            correctionAmount: '',
+            correctionPool: 'development'
+        };
+        
+        function loadData() {
+            try {
+                const pwd = localStorage.getItem('password');
+                if (pwd) state.storedPassword = pwd;
 
-        <div class="input-group">
-          <input
-            :type="showPassword ? 'text' : 'password'"
-            v-model="password"
-            placeholder="请输入密码"
-            class="input-with-icon"
-            @keyup.enter="handleLogin"
-          />
-          <button class="eye-btn" @click="togglePassword" v-html="showPassword ? icons.eyeOff : icons.eye"></button>
-        </div>
+                const dev = localStorage.getItem('developmentPool');
+                if (dev) state.developmentPool = parseFloat(dev);
 
-        <button class="btn btn-primary" @click="handleLogin">登录</button>
-        <p class="hint">默认密码: 123456</p>
-      </div>
-    </div>
+                const disc = localStorage.getItem('discretionaryPool');
+                if (disc) state.discretionaryPool = parseFloat(disc);
+                
+                const vwce = localStorage.getItem('vwcePool');
+                if (vwce) state.vwcePool = parseFloat(vwce);
+                
+                const cndx = localStorage.getItem('cndxPool');
+                if (cndx) state.cndxPool = parseFloat(cndx);
+                
+                const btc = localStorage.getItem('btcPool');
+                if (btc) state.btcPool = parseFloat(btc);
+                
+                const vwceStats = localStorage.getItem('vwceStats');
+                if (vwceStats) state.vwceStats = JSON.parse(vwceStats);
+                
+                const cndxStats = localStorage.getItem('cndxStats');
+                if (cndxStats) state.cndxStats = JSON.parse(cndxStats);
+                
+                const btcStats = localStorage.getItem('btcStats');
+                if (btcStats) state.btcStats = JSON.parse(btcStats);
 
-    <div v-else class="container">
-      <div class="header">
-        <h1>{{ pageTitle }}</h1>
-      </div>
-
-      <div class="content">
-        <!-- HOME -->
-        <section v-if="page === 'home'">
-          <div class="card">
-            <div class="asset-card"><span class="muted">总资产</span></div>
-            <div class="asset-amount">€{{ totalAssets.toFixed(2) }}</div>
-          </div>
-
-          <div class="pool-grid">
-            <div class="pool-card pool-green">
-              <div class="pool-title">发展金</div>
-              <div class="pool-amount">€{{ pools.development.total.toFixed(2) }}</div>
-              <div class="pool-subtitle">90%收入</div>
-            </div>
-
-            <div class="pool-card pool-blue">
-              <div class="pool-title">可支配金</div>
-              <div class="pool-amount">€{{ pools.discretionary.total.toFixed(2) }}</div>
-              <div class="pool-subtitle">10%收入</div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 class="card-title">发展金资产分布</h3>
-            <div class="sub-pool-grid">
-              <div v-for="(sp, key) in pools.development.subPools" :key="key" class="sub-pool-card" :class="subPoolClass(key)">
-                <div class="sub-pool-header">
-                  <div class="sub-pool-name">{{ key }}</div>
-                  <div class="sub-pool-percent">{{ Math.round(sp.ratio * 100) }}%</div>
+                const tx = localStorage.getItem('transactions');
+                if (tx) state.transactions = JSON.parse(tx);
+            } catch (error) {
+                console.log('初次使用');
+            }
+        }
+        
+        function saveData() {
+            try {
+                localStorage.setItem('password', state.storedPassword);
+                localStorage.setItem('developmentPool', state.developmentPool.toString());
+                localStorage.setItem('discretionaryPool', state.discretionaryPool.toString());
+                localStorage.setItem('vwcePool', state.vwcePool.toString());
+                localStorage.setItem('cndxPool', state.cndxPool.toString());
+                localStorage.setItem('btcPool', state.btcPool.toString());
+                localStorage.setItem('vwceStats', JSON.stringify(state.vwceStats));
+                localStorage.setItem('cndxStats', JSON.stringify(state.cndxStats));
+                localStorage.setItem('btcStats', JSON.stringify(state.btcStats));
+                localStorage.setItem('transactions', JSON.stringify(state.transactions));
+            } catch (error) {
+                console.error('保存失败:', error);
+            }
+        }
+        
+        function handleLogin() {
+            if (state.password === state.storedPassword) {
+                state.isLoggedIn = true;
+                state.password = '';
+                render();
+            } else {
+                alert('密码错误！');
+            }
+        }
+        
+        function handleAddRecord() {
+            if (!state.amount || parseFloat(state.amount) <= 0) {
+                alert('请输入有效金额');
+                return;
+            }
+            
+            const amountNum = parseFloat(state.amount);
+            const desc = state.description || (state.recordType === 'income' ? '收入' : '支出');
+            
+            let assetType = null;
+            if (desc.includes('VWCE')) assetType = 'vwce';
+            else if (desc.includes('CNDX')) assetType = 'cndx';
+            else if (desc.includes('BTC')) assetType = 'btc';
+            
+            const newTx = {
+                id: Date.now(),
+                type: state.recordType,
+                amount: amountNum,
+                description: desc,
+                pool: state.recordType === 'income' ? 'auto' : state.selectedPool,
+                assetType: assetType,
+                date: new Date().toLocaleString('zh-CN')
+            };
+            
+            if (state.recordType === 'income') {
+                const devAmount = amountNum * 0.9;
+                const discAmount = amountNum * 0.1;
+                state.developmentPool += devAmount;
+                state.discretionaryPool += discAmount;
+                
+                const vwceAmount = devAmount * 0.6;
+                const cndxAmount = devAmount * 0.35;
+                const btcAmount = devAmount * 0.05;
+                
+                state.vwcePool += vwceAmount;
+                state.cndxPool += cndxAmount;
+                state.btcPool += btcAmount;
+                
+                if (assetType === 'vwce') {
+                    state.vwceStats.totalIncome += amountNum;
+                } else if (assetType === 'cndx') {
+                    state.cndxStats.totalIncome += amountNum;
+                } else if (assetType === 'btc') {
+                    state.btcStats.totalIncome += amountNum;
+                }
+            } else {
+                if (state.selectedPool === 'development') {
+                    if (state.developmentPool >= amountNum) {
+                        state.developmentPool -= amountNum;
+                        
+                        if (assetType === 'vwce' && state.vwcePool >= amountNum) {
+                            state.vwcePool -= amountNum;
+                            state.vwceStats.totalExpense += amountNum;
+                        } else if (assetType === 'cndx' && state.cndxPool >= amountNum) {
+                            state.cndxPool -= amountNum;
+                            state.cndxStats.totalExpense += amountNum;
+                        } else if (assetType === 'btc' && state.btcPool >= amountNum) {
+                            state.btcPool -= amountNum;
+                            state.btcStats.totalExpense += amountNum;
+                        }
+                    } else {
+                        alert('发展金余额不足！');
+                        return;
+                    }
+                } else {
+                    if (state.discretionaryPool >= amountNum) {
+                        state.discretionaryPool -= amountNum;
+                    } else {
+                        alert('可支配金余额不足！');
+                        return;
+                    }
+                }
+            }
+            
+            state.transactions.unshift(newTx);
+            state.amount = '';
+            state.description = '';
+            state.currentPage = 'home';
+            saveData();
+            render();
+        }
+        
+        function handleCorrection() {
+            if (!state.correctionAmount) {
+                alert('请输入修正金额');
+                return;
+            }
+            
+            const amountNum = parseFloat(state.correctionAmount);
+            const newTx = {
+                id: Date.now(),
+                type: 'correction',
+                amount: amountNum,
+                description: '资产修正',
+                pool: state.correctionPool,
+                date: new Date().toLocaleString('zh-CN')
+            };
+            
+            if (state.correctionPool === 'development') {
+                state.developmentPool = amountNum;
+            } else {
+                state.discretionaryPool = amountNum;
+            }
+            
+            state.transactions.unshift(newTx);
+            state.correctionAmount = '';
+            saveData();
+            render();
+            alert('资产修正成功！');
+        }
+        
+        function deleteTransaction(id) {
+            if (confirm('确定要删除这条记录吗？')) {
+                state.transactions = state.transactions.filter(t => t.id !== id);
+                saveData();
+                render();
+            }
+        }
+        
+        function handleChangePassword() {
+            if (!state.newPassword || !state.confirmPassword) {
+                alert('请输入新密码');
+                return;
+            }
+            if (state.newPassword !== state.confirmPassword) {
+                alert('两次密码不一致');
+                return;
+            }
+            state.storedPassword = state.newPassword;
+            state.newPassword = '';
+            state.confirmPassword = '';
+            saveData();
+            render();
+            alert('密码修改成功！');
+        }
+        
+        function handleLogout() {
+            if (confirm('确定要退出登录吗？')) {
+                state.isLoggedIn = false;
+                state.currentPage = 'home';
+                render();
+            }
+        }
+        
+        function render() {
+            const root = document.getElementById('root');
+            
+            if (!state.isLoggedIn) {
+                root.innerHTML = `
+                    <div class="login-page">
+                        <div class="login-card">
+                            <div class="login-icon">${icons.lock}</div>
+                            <h1>智能记账</h1>
+                            <p class="subtitle">请输入密码登录</p>
+                            <div class="input-group">
+                                <input 
+                                    type="${state.showPassword ? 'text' : 'password'}" 
+                                    id="passwordInput"
+                                    placeholder="请输入密码"
+                                    class="input-with-icon"
+                                    value="${state.password}"
+                                />
+                                <button class="eye-btn" onclick="togglePassword()">
+                                    ${state.showPassword ? icons.eyeOff : icons.eye}
+                                </button>
+                            </div>
+                            <button class="btn btn-primary" onclick="handleLogin()">登录</button>
+                            <p style="text-align:center;color:#9ca3af;font-size:14px;margin-top:20px;">
+                                默认密码: 123456
+                            </p>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('passwordInput').addEventListener('input', (e) => {
+                    state.password = e.target.value;
+                });
+                
+                document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleLogin();
+                });
+                
+                return;
+            }
+            
+            const totalAssets = state.developmentPool + state.discretionaryPool;
+            const totalSubPools = state.vwcePool + state.cndxPool + state.btcPool;
+            
+            let content = '';
+            
+            if (state.currentPage === 'home') {
+                content = `
+                    <div class="card">
+                        <div class="asset-card">
+                            <span style="color:#6b7280;">总资产</span>
+                        </div>
+                        <div class="asset-amount">€${totalAssets.toFixed(2)}</div>
+                    </div>
+                    
+                    <div class="pool-grid">
+                        <div class="pool-card pool-green">
+                            <div class="pool-title">发展金</div>
+                            <div class="pool-amount">€${state.developmentPool.toFixed(2)}</div>
+                            <div class="pool-subtitle">90%收入</div>
+                        </div>
+                        
+                        <div class="pool-card pool-blue">
+                            <div class="pool-title">可支配金</div>
+                            <div class="pool-amount">€${state.discretionaryPool.toFixed(2)}</div>
+                            <div class="pool-subtitle">10%收入</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">发展金资产分布</h3>
+                        <div class="sub-pool-grid">
+                            <div class="sub-pool-card sub-pool-vwce">
+                                <div class="sub-pool-header">
+                                    <div class="sub-pool-name">VWCE</div>
+                                    <div class="sub-pool-percent">60%</div>
+                                </div>
+                                <div class="sub-pool-amount">€${state.vwcePool.toFixed(2)}</div>
+                                <div class="sub-pool-stats">
+                                    收入: €${state.vwceStats.totalIncome.toFixed(2)}<br/>
+                                    支出: €${state.vwceStats.totalExpense.toFixed(2)}<br/>
+                                    盈亏: €${(state.vwceStats.totalIncome - state.vwceStats.totalExpense).toFixed(2)}
+                                </div>
+                            </div>
+                            <div class="sub-pool-card sub-pool-cndx">
+                                <div class="sub-pool-header">
+                                    <div class="sub-pool-name">CNDX</div>
+                                    <div class="sub-pool-percent">35%</div>
+                                </div>
+                                <div class="sub-pool-amount">€${state.cndxPool.toFixed(2)}</div>
+                                <div class="sub-pool-stats">
+                                    收入: €${state.cndxStats.totalIncome.toFixed(2)}<br/>
+                                    支出: €${state.cndxStats.totalExpense.toFixed(2)}<br/>
+                                    盈亏: €${(state.cndxStats.totalIncome - state.cndxStats.totalExpense).toFixed(2)}
+                                </div>
+                            </div>
+                            <div class="sub-pool-card sub-pool-btc">
+                                <div class="sub-pool-header">
+                                    <div class="sub-pool-name">BTC</div>
+                                    <div class="sub-pool-percent">5%</div>
+                                </div>
+                                <div class="sub-pool-amount">€${state.btcPool.toFixed(2)}</div>
+                                <div class="sub-pool-stats">
+                                    收入: €${state.btcStats.totalIncome.toFixed(2)}<br/>
+                                    支出: €${state.btcStats.totalExpense.toFixed(2)}<br/>
+                                    盈亏: €${(state.btcStats.totalIncome - state.btcStats.totalExpense).toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;color:#6b7280;font-size:13px;padding-top:12px;border-top:1px solid #e5e7eb;margin-top:8px;">
+                            总投资: €${totalSubPools.toFixed(2)} | 现金余额: €${(state.developmentPool - totalSubPools).toFixed(2)}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">最近交易</h3>
+                        ${state.transactions.length === 0 ? 
+                            '<p class="empty-state">暂无交易记录</p>' :
+                            state.transactions.slice(0, 5).map(tx => `
+                                <div class="transaction-item">
+                                    <div class="transaction-left">
+                                        <div class="transaction-icon icon-${tx.type === 'income' ? 'green' : tx.type === 'correction' ? 'orange' : 'red'}">
+                                            ${tx.type === 'income' ? icons.up : tx.type === 'correction' ? icons.edit : icons.down}
+                                        </div>
+                                        <div class="transaction-info">
+                                            <div class="transaction-desc">${tx.description}</div>
+                                            <div class="transaction-date">${tx.date}</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-amount amount-${tx.type === 'income' ? 'green' : tx.type === 'correction' ? 'orange' : 'red'}">
+                                        ${tx.type === 'income' ? '+' : tx.type === 'correction' ? '=' : '-'}€${tx.amount.toFixed(2)}
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                `;
+            } else if (state.currentPage === 'add') {
+                content = `
+                    <div class="card">
+                        <div class="type-selector">
+                            <button 
+                                class="type-btn ${state.recordType === 'income' ? 'active-green' : 'inactive'}"
+                                onclick="setRecordType('income')"
+                            >收入</button>
+                            <button 
+                                class="type-btn ${state.recordType === 'expense' ? 'active-red' : 'inactive'}"
+                                onclick="setRecordType('expense')"
+                            >支出</button>
+                        </div>
+                        
+                        <div style="margin-bottom:16px;">
+                            <label class="label">快捷操作</label>
+                            <div class="quick-buttons">
+                                <button class="quick-btn quick-btn-vwce ${state.recordType === 'expense' ? 'expense-mode' : ''}" onclick="fillQuick('VWCE')">
+                                    ${state.recordType === 'income' ? '卖出' : '买入'} VWCE
+                                </button>
+                                <button class="quick-btn quick-btn-cndx ${state.recordType === 'expense' ? 'expense-mode' : ''}" onclick="fillQuick('CNDX')">
+                                    ${state.recordType === 'income' ? '卖出' : '买入'} CNDX
+                                </button>
+                                <button class="quick-btn quick-btn-btc ${state.recordType === 'expense' ? 'expense-mode' : ''}" onclick="fillQuick('BTC')">
+                                    ${state.recordType === 'income' ? '卖出' : '买入'} BTC
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom:20px;">
+                            <label class="label">金额</label>
+                            <div class="amount-input-wrapper">
+                                <span class="amount-symbol">€</span>
+                                <input 
+                                    type="number" 
+                                    id="amountInput"
+                                    class="amount-input"
+                                    placeholder="0.00"
+                                    value="${state.amount}"
+                                />
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom:20px;">
+                            <label class="label">描述</label>
+                            <input 
+                                type="text" 
+                                id="descInput"
+                                placeholder="${state.recordType === 'income' ? '收入来源' : '支出用途'}"
+                                value="${state.description}"
+                            />
+                        </div>
+                        
+                        ${state.recordType === 'expense' ? `
+                            <div style="margin-bottom:20px;">
+                                <label class="label">使用资金池</label>
+                                <select id="poolSelect" onchange="updateSelectedPool(this.value)">
+                                    <option value="discretionary" ${state.selectedPool === 'discretionary' ? 'selected' : ''}>
+                                        可支配金 (€${state.discretionaryPool.toFixed(2)})
+                                    </option>
+                                    <option value="development" ${state.selectedPool === 'development' ? 'selected' : ''}>
+                                        发展金 (€${state.developmentPool.toFixed(2)})
+                                    </option>
+                                </select>
+                            </div>
+                        ` : ''}
+                        
+                        ${state.recordType === 'income' ? `
+                            <div class="info-box">
+                                <p class="info-text">
+                                    💡 收入将自动分配：<br/>
+                                    • 90% → 发展金 (VWCE 60%, CNDX 35%, BTC 5%)<br/>
+                                    • 10% → 可支配金
+                                </p>
+                            </div>
+                        ` : ''}
+                        
+                        <button 
+                            class="btn ${state.recordType === 'income' ? 'btn-green' : 'btn-red'}"
+                            onclick="handleAddRecord()"
+                        >
+                            添加${state.recordType === 'income' ? '收入' : '支出'}
+                        </button>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    const amountInput = document.getElementById('amountInput');
+                    const descInput = document.getElementById('descInput');
+                    
+                    if (amountInput) {
+                        amountInput.addEventListener('input', (e) => {
+                            state.amount = e.target.value;
+                        });
+                    }
+                    
+                    if (descInput) {
+                        descInput.addEventListener('input', (e) => {
+                            state.description = e.target.value;
+                        });
+                    }
+                }, 0);
+            } else if (state.currentPage === 'history') {
+                content = state.transactions.length === 0 ? 
+                    '<div class="empty-state">' + icons.history + '<p style="margin-top:16px;">暂无交易记录</p></div>' :
+                    state.transactions.map(tx => `
+                        <div class="history-card">
+                            <div class="history-content">
+                                <div class="history-left">
+                                    <div class="transaction-icon icon-${tx.type === 'income' ? 'green' : tx.type === 'correction' ? 'orange' : 'red'}">
+                                        ${tx.type === 'income' ? icons.up : tx.type === 'correction' ? icons.edit : icons.down}
+                                    </div>
+                                    <div class="history-details">
+                                        <div class="history-title">${tx.description}</div>
+                                        <div class="transaction-date">${tx.date}</div>
+                                        <div class="history-meta">
+                                            ${tx.type === 'income' ? '自动分配' : 
+                                              tx.type === 'expense' ? (tx.pool === 'development' ? '发展金' : '可支配金') :
+                                              (tx.pool === 'development' ? '发展金修正' : '可支配金修正')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="transaction-right">
+                                    <div class="transaction-amount amount-${tx.type === 'income' ? 'green' : tx.type === 'correction' ? 'orange' : 'red'}">
+                                        ${tx.type === 'income' ? '+' : tx.type === 'correction' ? '=' : '-'}€${tx.amount.toFixed(2)}
+                                    </div>
+                                    <button class="delete-btn" onclick="deleteTransaction(${tx.id})">
+                                        ${icons.trash}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+            } else if (state.currentPage === 'settings') {
+                content = `
+                    <div class="card">
+                        <h3 class="card-title">资产修正</h3>
+                        <div style="margin-bottom:12px;">
+                            <select id="correctionPool" onchange="updateCorrectionPool(this.value)">
+                                <option value="development" ${state.correctionPool === 'development' ? 'selected' : ''}>发展金</option>
+                                <option value="discretionary" ${state.correctionPool === 'discretionary' ? 'selected' : ''}>可支配金</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <input 
+                                type="number" 
+                                id="correctionAmount"
+                                placeholder="输入修正后的金额"
+                                value="${state.correctionAmount}"
+                            />
+                        </div>
+                        <button class="btn btn-orange" onclick="handleCorrection()">执行修正</button>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">修改密码</h3>
+                        <div style="margin-bottom:12px;">
+                            <input 
+                                type="password" 
+                                id="newPwdInput"
+                                placeholder="输入新密码"
+                                value="${state.newPassword}"
+                            />
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <input 
+                                type="password" 
+                                id="confirmPwdInput"
+                                placeholder="确认新密码"
+                                value="${state.confirmPassword}"
+                            />
+                        </div>
+                        <button class="btn btn-primary" onclick="handleChangePassword()">
+                            <span style="display:inline-flex;align-items:center;gap:8px;">
+                                ${icons.save}
+                                <span>保存密码</span>
+                            </span>
+                        </button>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">关于</h3>
+                        <p style="color:#6b7280;font-size:14px;line-height:1.8;">
+                            • 版本: 1.0.0<br/>
+                            • 数据自动保存<br/>
+                            • 收入自动分配：发展金90% (VWCE 60%, CNDX 35%, BTC 5%)，可支配金10%
+                        </p>
+                    </div>
+                    
+                    <button class="btn btn-red" onclick="handleLogout()">退出登录</button>
+                `;
+                
+                setTimeout(() => {
+                    const corrAmountInput = document.getElementById('correctionAmount');
+                    if (corrAmountInput) {
+                        corrAmountInput.addEventListener('input', (e) => {
+                            state.correctionAmount = e.target.value;
+                        });
+                    }
+                    
+                    const newPwdInput = document.getElementById('newPwdInput');
+                    const confirmPwdInput = document.getElementById('confirmPwdInput');
+                    
+                    if (newPwdInput) {
+                        newPwdInput.addEventListener('input', (e) => {
+                            state.newPassword = e.target.value;
+                        });
+                    }
+                    
+                    if (confirmPwdInput) {
+                        confirmPwdInput.addEventListener('input', (e) => {
+                            state.confirmPassword = e.target.value;
+                        });
+                    }
+                }, 0);
+            }
+            
+            root.innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1 style="font-size:24px;margin:0;">
+                            ${state.currentPage === 'home' ? '资产总览' :
+                              state.currentPage === 'add' ? (state.recordType === 'income' ? '添加收入' : '添加支出') :
+                              state.currentPage === 'history' ? '交易历史' : '设置'}
+                        </h1>
+                    </div>
+                    <div class="content">
+                        ${content}
+                    </div>
+                    <div class="bottom-nav">
+                        <button class="nav-btn ${state.currentPage === 'add' && state.recordType === 'income' ? 'active' : ''}" onclick="setPage('add'); setRecordType('income');">
+                            ${icons.plus}
+                            <span class="nav-label">收入</span>
+                        </button>
+                        <button class="nav-btn ${state.currentPage === 'add' && state.recordType === 'expense' ? 'active' : ''}" onclick="quickExpense()">
+                            ${icons.minus}
+                            <span class="nav-label">支出</span>
+                        </button>
+                        <button class="nav-btn ${state.currentPage === 'home' ? 'active' : ''}" onclick="setPage('home')">
+                            ${icons.home}
+                            <span class="nav-label">首页</span>
+                        </button>
+                        <button class="nav-btn ${state.currentPage === 'history' ? 'active' : ''}" onclick="setPage('history')">
+                            ${icons.history}
+                            <span class="nav-label">历史</span>
+                        </button>
+                        <button class="nav-btn ${state.currentPage === 'settings' ? 'active' : ''}" onclick="setPage('settings')">
+                            ${icons.settings}
+                            <span class="nav-label">设置</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="sub-pool-amount">€{{ sp.amount.toFixed(2) }}</div>
-                <div class="sub-pool-stats">
-                  收入: €{{ stats[key].totalIncome.toFixed(2) }}<br />
-                  支出: €{{ stats[key].totalExpense.toFixed(2) }}<br />
-                  盈亏: €{{ (stats[key].totalIncome - stats[key].totalExpense).toFixed(2) }}
-                </div>
-              </div>
-            </div>
-
-            <div class="summary-line">
-              总投资: €{{ totalSubPools.toFixed(2) }} | 现金余额: €{{ (pools.development.total - totalSubPools).toFixed(2) }}
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 class="card-title">最近交易</h3>
-            <div v-if="transactions.length === 0" class="empty-state">暂无交易记录</div>
-
-            <div v-else>
-              <div v-for="tx in recentTransactions" :key="tx.id" class="transaction-item">
-                <div class="transaction-left">
-                  <div class="transaction-icon" :class="iconColor(tx)"> <span v-html="iconFor(tx)"></span> </div>
-                  <div class="transaction-info">
-                    <div class="transaction-desc">{{ tx.description }}</div>
-                    <div class="transaction-date">{{ tx.date }}</div>
-                  </div>
-                </div>
-                <div class="transaction-amount" :class="amountColor(tx)">{{ signFor(tx) }}€{{ tx.amount.toFixed(2) }}</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ADD -->
-        <section v-if="page === 'add'">
-          <div class="card">
-            <div class="type-selector">
-              <button :class="['type-btn', recordType === 'income' ? 'active-green' : 'inactive']" @click="setRecordType('income')">收入</button>
-              <button :class="['type-btn', recordType === 'expense' ? 'active-red' : 'inactive']" @click="setRecordType('expense')">支出</button>
-            </div>
-
-            <div class="quick-block">
-              <label class="label">快捷操作</label>
-              <div class="quick-buttons">
-                <button v-for="a in ['VWCE','CNDX','BTC']" :key="a" :class="['quick-btn', 'quick-btn-' + a.toLowerCase()]" @click="fillQuick(a)">
-                  {{ recordType === 'income' ? '卖出' : '买入' }} {{ a }}
-                </button>
-              </div>
-            </div>
-
-            <div class="amount-block">
-              <label class="label">金额</label>
-              <div class="amount-input-wrapper">
-                <span class="amount-symbol">€</span>
-                <input v-model.number="amount" type="number" id="amountInput" class="amount-input" placeholder="0.00" />
-              </div>
-            </div>
-
-            <div class="desc-block">
-              <label class="label">描述</label>
-              <input v-model="description" type="text" id="descInput" :placeholder="recordType === 'income' ? '收入来源' : '支出用途'" />
-            </div>
-
-            <div v-if="recordType === 'expense'" class="pool-select">
-              <label class="label">使用资金池</label>
-              <select v-model="selectedPool">
-                <option value="discretionary">可支配金 (€{{ pools.discretionary.total.toFixed(2) }})</option>
-                <option value="development">发展金 (€{{ pools.development.total.toFixed(2) }})</option>
-              </select>
-            </div>
-
-            <div v-if="recordType === 'income'" class="info-box">
-              <p class="info-text">
-                💡 收入将自动分配：<br />
-                • 90% → 发展金 (VWCE 60%, CNDX 35%, BTC 5%)<br />
-                • 10% → 可支配金
-              </p>
-            </div>
-
-            <button :class="['btn', recordType === 'income' ? 'btn-green' : 'btn-red']" @click="handleAddRecord">添加{{ recordType === 'income' ? '收入' : '支出' }}</button>
-          </div>
-        </section>
-
-        <!-- HISTORY -->
-        <section v-if="page === 'history'">
-          <div v-if="transactions.length === 0" class="empty-state">暂无交易记录</div>
-
-          <div v-else>
-            <div v-for="tx in transactions" :key="tx.id" class="history-card">
-              <div class="history-content">
-                <div class="history-left">
-                  <div class="transaction-icon" :class="iconColor(tx)"><span v-html="iconFor(tx)"></span></div>
-                  <div class="history-details">
-                    <div class="history-title">{{ tx.description }}</div>
-                    <div class="transaction-date">{{ tx.date }}</div>
-                    <div class="history-meta">{{ metaFor(tx) }}</div>
-                  </div>
-                </div>
-                <div class="transaction-right">
-                  <div class="transaction-amount" :class="amountColor(tx)">{{ signFor(tx) }}€{{ tx.amount.toFixed(2) }}</div>
-                  <button class="delete-btn" @click="deleteTransaction(tx.id)" v-html="icons.trash"></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- SETTINGS -->
-        <section v-if="page === 'settings'">
-          <div class="card">
-            <h3 class="card-title">资产修正</h3>
-            <div class="form-row">
-              <select v-model="correctionPool">
-                <option value="development">发展金</option>
-                <option value="discretionary">可支配金</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <input v-model.number="correctionAmount" type="number" placeholder="输入修正后的金额" />
-            </div>
-            <button class="btn btn-orange" @click="handleCorrection">执行修正</button>
-          </div>
-
-          <div class="card">
-            <h3 class="card-title">修改密码</h3>
-            <div class="form-row">
-              <input v-model="newPassword" type="password" placeholder="输入新密码" />
-            </div>
-            <div class="form-row">
-              <input v-model="confirmPassword" type="password" placeholder="确认新密码" />
-            </div>
-            <button class="btn btn-primary" @click="handleChangePassword"><span v-html="icons.save"></span> 保存密码</button>
-          </div>
-
-          <div class="card">
-            <h3 class="card-title">数据</h3>
-            <div class="form-row">
-              <button class="btn" @click="exportData">导出数据</button>
-              <input ref="importFile" type="file" style="display:none" @change="importData" />
-              <button class="btn" @click="triggerImport">导入数据</button>
-            </div>
-            <div class="form-row" style="margin-top:12px;">
-              <button class="btn btn-red" @click="handleLogout">退出登录</button>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <div class="bottom-nav">
-        <button :class="['nav-btn', page === 'add' && recordType === 'income' ? 'active' : '']" @click="() => { setPage('add'); setRecordType('income'); }" v-html="icons.plus"><span class="nav-label">收入</span></button>
-        <button :class="['nav-btn', page === 'add' && recordType === 'expense' ? 'active' : '']" @click="quickExpense" v-html="icons.minus"><span class="nav-label">支出</span></button>
-        <button :class="['nav-btn', page === 'home' ? 'active' : '']" @click="setPage('home')" v-html="icons.home"><span class="nav-label">首页</span></button>
-        <button :class="['nav-btn', page === 'history' ? 'active' : '']" @click="setPage('history')" v-html="icons.history"><span class="nav-label">历史</span></button>
-        <button :class="['nav-btn', page === 'settings' ? 'active' : '']" @click="setPage('settings')" v-html="icons.settings"><span class="nav-label">设置</span></button>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script setup>
-import { reactive, computed, ref, onMounted } from 'vue';
-
-// --- icons (kept inline for offline-friendly single-file app) ---
-const icons = reactive({
-  home: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>',
-  plus: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>',
-  minus: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>',
-  history: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>',
-  settings: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
-  eye: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
-  eyeOff: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>',
-  lock: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
-  up: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>',
-  down: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 18l-9.5-9.5-5 5L1 6"/><path d="M17 18h6v-6"/></svg>',
-  edit: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
-  trash: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
-  save: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>'
-});
-
-// --------------- reactive app state ----------------
-const page = ref('home');
-const isLoggedIn = ref(false);
-const password = ref('');
-const showPassword = ref(false);
-
-const recordType = ref('income');
-const amount = ref(null);
-const description = ref('');
-const selectedPool = ref('discretionary');
-
-const newPassword = ref('');
-const confirmPassword = ref('');
-
-const correctionPool = ref('development');
-const correctionAmount = ref(null);
-
-const importFile = ref(null);
-
-// structured pools and stats for easier extension
-const pools = reactive({
-  development: {
-    total: 0,
-    subPools: {
-      VWCE: { ratio: 0.6, amount: 0 },
-      CNDX: { ratio: 0.35, amount: 0 },
-      BTC: { ratio: 0.05, amount: 0 }
-    }
-  },
-  discretionary: {
-    total: 0
-  }
-});
-
-const stats = reactive({
-  VWCE: { totalIncome: 0, totalExpense: 0 },
-  CNDX: { totalIncome: 0, totalExpense: 0 },
-  BTC: { totalIncome: 0, totalExpense: 0 }
-});
-
-const transactions = ref([]);
-
-// stored hash (keeps default to hashed '123456')
-const storedHash = ref('');
-
-// utils
-function round2(n) {
-  return Math.round((n + Number.EPSILON) * 100) / 100;
-}
-
-function saveAll() {
-  const payload = {
-    pools: JSON.parse(JSON.stringify(pools)),
-    stats: JSON.parse(JSON.stringify(stats)),
-    transactions: transactions.value,
-    storedHash: storedHash.value
-  };
-  localStorage.setItem('smartledger_v1', JSON.stringify(payload));
-}
-
-function loadAll() {
-  try {
-    const raw = localStorage.getItem('smartledger_v1');
-    if (raw) {
-      const data = JSON.parse(raw);
-      // restore pools
-      Object.assign(pools, data.pools || pools);
-      Object.assign(stats, data.stats || stats);
-      transactions.value = data.transactions || [];
-      if (data.storedHash) storedHash.value = data.storedHash;
-    } else {
-      // initial default password: '123456'
-      hashString('123456').then(h => storedHash.value = h);
-    }
-  } catch (e) {
-    console.warn('load failed', e);
-  }
-}
-
-async function hashString(str) {
-  // Use SubtleCrypto if available, fallback naive reversible encoding
-  if (window.crypto && crypto.subtle) {
-    const enc = new TextEncoder().encode(str);
-    const digest = await crypto.subtle.digest('SHA-256', enc);
-    return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,'0')).join('');
-  }
-  // fallback
-  return btoa(unescape(encodeURIComponent(str))).split('').reverse().join('');
-}
-
-function verifyPassword(input) {
-  return hashString(input).then(h => h === storedHash.value);
-}
-
-// computed
-const totalSubPools = computed(() => {
-  return Object.values(pools.development.subPools).reduce((s, p) => s + p.amount, 0);
-});
-const totalAssets = computed(() => round2(pools.development.total + pools.discretionary.total));
-const recentTransactions = computed(() => transactions.value.slice(0,5));
-const pageTitle = computed(() => {
-  if (page.value === 'home') return '资产总览';
-  if (page.value === 'add') return recordType.value === 'income' ? '添加收入' : '添加支出';
-  if (page.value === 'history') return '交易历史';
-  return '设置';
-});
-
-// lifecycle
-onMounted(() => {
-  loadAll();
-});
-
-// behaviors
-function togglePassword() { showPassword.value = !showPassword.value; }
-
-async function handleLogin() {
-  if (!password.value) return alert('请输入密码');
-  const ok = await verifyPassword(password.value);
-  if (ok) {
-    isLoggedIn.value = true;
-    password.value = '';
-  } else {
-    alert('密码错误');
-  }
-}
-
-function setPage(p) { page.value = p; }
-function setRecordType(t) { recordType.value = t; }
-function quickExpense() { recordType.value = 'expense'; page.value = 'add'; }
-function fillQuick(asset) { description.value = `${recordType.value === 'income' ? '卖出' : '买入'} ${asset}`; setTimeout(() => document.getElementById('amountInput')?.focus(), 50); }
-
-function iconFor(tx) {
-  if (tx.type === 'income') return icons.up;
-  if (tx.type === 'correction') return icons.edit;
-  return icons.down;
-}
-function iconColor(tx) { return tx.type === 'income' ? 'icon-green' : tx.type === 'correction' ? 'icon-orange' : 'icon-red'; }
-function amountColor(tx) { return tx.type === 'income' ? 'amount-green' : tx.type === 'correction' ? 'amount-orange' : 'amount-red'; }
-function signFor(tx) { return tx.type === 'income' ? '+' : tx.type === 'correction' ? '=' : '-'; }
-function metaFor(tx) {
-  if (tx.type === 'income') return '自动分配';
-  if (tx.type === 'expense') return tx.pool === 'development' ? '发展金' : '可支配金';
-  return tx.pool === 'development' ? '发展金修正' : '可支配金修正';
-}
-
-function subPoolClass(key) {
-  return key.toLowerCase() === 'vwce' ? 'sub-pool-vwce' : key.toLowerCase() === 'cndx' ? 'sub-pool-cndx' : 'sub-pool-btc';
-}
-
-function validateAmount(val) {
-  if (val === null || val === undefined) return false;
-  const n = Number(val);
-  return Number.isFinite(n) && n > 0;
-}
-
-function pushTransaction(tx) {
-  transactions.value.unshift(tx);
-  // keep recent length reasonable
-  if (transactions.value.length > 1000) transactions.value.pop();
-  saveAll();
-}
-
-function applyIncome(amountNum, desc, assetType) {
-  const devAmount = round2(amountNum * 0.9);
-  const discAmount = round2(amountNum * 0.1);
-  pools.development.total = round2(pools.development.total + devAmount);
-  pools.discretionary.total = round2(pools.discretionary.total + discAmount);
-
-  // split to subpools
-  Object.keys(pools.development.subPools).forEach(k => {
-    const ratio = pools.development.subPools[k].ratio;
-    const add = round2(devAmount * ratio);
-    pools.development.subPools[k].amount = round2(pools.development.subPools[k].amount + add);
-    if (assetType === k.toLowerCase()) stats[k].totalIncome = round2(stats[k].totalIncome + amountNum);
-  });
-}
-
-function applyExpense(amountNum, poolName, assetType) {
-  if (poolName === 'development') {
-    if (pools.development.total < amountNum) return 'development_insufficient';
-    pools.development.total = round2(pools.development.total - amountNum);
-    if (assetType) {
-      const key = assetType.toUpperCase();
-      if (pools.development.subPools[key].amount < amountNum) return 'subpool_insufficient';
-      pools.development.subPools[key].amount = round2(pools.development.subPools[key].amount - amountNum);
-      stats[key].totalExpense = round2(stats[key].totalExpense + amountNum);
-    }
-  } else {
-    if (pools.discretionary.total < amountNum) return 'discretionary_insufficient';
-    pools.discretionary.total = round2(pools.discretionary.total - amountNum);
-  }
-  return 'ok';
-}
-
-function detectAssetType(desc) {
-  const txt = (desc || '').toUpperCase();
-  if (txt.includes('VWCE')) return 'vwce';
-  if (txt.includes('CNDX')) return 'cndx';
-  if (txt.includes('BTC')) return 'btc';
-  return null;
-}
-
-function handleAddRecord() {
-  if (!validateAmount(amount.value)) return alert('请输入有效金额');
-  const amountNum = round2(Number(amount.value));
-  const desc = description.value || (recordType.value === 'income' ? '收入' : '支出');
-  const assetType = detectAssetType(desc);
-
-  const tx = {
-    id: Date.now(),
-    type: recordType.value,
-    amount: amountNum,
-    description: desc,
-    pool: recordType.value === 'income' ? 'auto' : selectedPool.value,
-    assetType: assetType,
-    date: new Date().toLocaleString('zh-CN')
-  };
-
-  if (recordType.value === 'income') {
-    applyIncome(amountNum, desc, assetType);
-  } else {
-    const res = applyExpense(amountNum, selectedPool.value, assetType);
-    if (res !== 'ok') {
-      if (res === 'development_insufficient') return alert('发展金余额不足！');
-      if (res === 'discretionary_insufficient') return alert('可支配金余额不足！');
-      if (res === 'subpool_insufficient') return alert('对应子池余额不足！');
-    }
-  }
-
-  pushTransaction(tx);
-  // reset inputs
-  amount.value = null;
-  description.value = '';
-  page.value = 'home';
-}
-
-function handleCorrection() {
-  if (!validateAmount(correctionAmount.value) && correctionAmount.value !== 0) return alert('请输入修正金额');
-  const amt = round2(Number(correctionAmount.value));
-  const tx = {
-    id: Date.now(),
-    type: 'correction',
-    amount: amt,
-    description: '资产修正',
-    pool: correctionPool.value,
-    date: new Date().toLocaleString('zh-CN')
-  };
-  if (correctionPool.value === 'development') {
-    pools.development.total = amt;
-  } else {
-    pools.discretionary.total = amt;
-  }
-  pushTransaction(tx);
-  correctionAmount.value = null;
-  alert('资产修正成功！');
-}
-
-function deleteTransaction(id) {
-  if (!confirm('确定要删除这条记录吗？')) return;
-  transactions.value = transactions.value.filter(t => t.id !== id);
-  saveAll();
-}
-
-async function handleChangePassword() {
-  if (!newPassword.value || !confirmPassword.value) return alert('请输入新密码');
-  if (newPassword.value !== confirmPassword.value) return alert('两次密码不一致');
-  storedHash.value = await hashString(newPassword.value);
-  newPassword.value = '';
-  confirmPassword.value = '';
-  saveAll();
-  alert('密码修改成功！');
-}
-
-function handleLogout() {
-  if (!confirm('确定要退出登录吗？')) return;
-  isLoggedIn.value = false;
-  page.value = 'home';
-}
-
-function exportData() {
-  const payload = JSON.stringify({ pools: JSON.parse(JSON.stringify(pools)), stats: JSON.parse(JSON.stringify(stats)), transactions: transactions.value }, null, 2);
-  const blob = new Blob([payload], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'smartledger_export.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function triggerImport() { importFile.value?.click(); }
-
-function importData(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  file.text().then(txt => {
-    try {
-      const d = JSON.parse(txt);
-      if (d.pools) Object.assign(pools, d.pools);
-      if (d.stats) Object.assign(stats, d.stats);
-      if (d.transactions) transactions.value = d.transactions;
-      saveAll();
-      alert('导入成功');
-    } catch (err) { alert('导入失败：文件格式错误'); }
-  });
-}
-
-// expose to template
-const vm = {
-  icons,
-  page,
-  isLoggedIn,
-  password,
-  showPassword,
-  recordType,
-  amount,
-  description,
-  selectedPool,
-  newPassword,
-  confirmPassword,
-  correctionPool,
-  correctionAmount,
-  importFile,
-  pools,
-  stats,
-  transactions,
-  recentTransactions,
-  totalAssets,
-  totalSubPools,
-  pageTitle,
-  togglePassword,
-  handleLogin,
-  setPage,
-  setRecordType,
-  quickExpense,
-  fillQuick,
-  handleAddRecord,
-  handleCorrection,
-  deleteTransaction,
-  handleChangePassword,
-  handleLogout,
-  exportData,
-  importData,
-  triggerImport,
-  icons,
-  iconFor,
-  iconColor,
-  amountColor,
-  signFor,
-  metaFor,
-  subPoolClass
-};
-</script>
-
-<style scoped>
-/* base reset & typography (adapted from your original) */
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#f3f4f6;--accent:#4f46e5}
-html,body,#app{height:100%}
-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg)}
-.app{min-height:100vh}
-.container{max-width:760px;margin:0 auto;display:flex;flex-direction:column;min-height:100vh}
-
-/* login */
-.login-page{min-height:100vh;background:linear-gradient(135deg,#dbeafe 0%,#c7d2fe 100%);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-card{background:#fff;border-radius:20px;padding:36px;box-shadow:0 10px 30px rgba(0,0,0,.08);width:100%;max-width:420px;text-align:center}
-.login-icon{width:64px;height:64px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:#fff}
-.subtitle{color:#6b7280;margin-bottom:18px}
-.hint{color:#9ca3af;font-size:14px;margin-top:20px}
-
-/* header */
-.header{background:linear-gradient(135deg,var(--accent) 0%,#7c3aed 100%);color:#fff;padding:48px 24px 24px;border-radius:0 0 24px 24px;box-shadow:0 4px 10px rgba(0,0,0,.06)}
-.header h1{font-size:22px;margin:0}
-.content{padding:20px;padding-bottom:110px;flex:1}
-.card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.04);margin-bottom:14px}
-.asset-card{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.asset-amount{font-size:34px;font-weight:700;color:#111}
-
-.pool-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px}
-.pool-card{padding:18px;border-radius:14px;color:#fff}
-.pool-green{background:linear-gradient(135deg,#34d399 0%,#10b981 100%)}
-.pool-blue{background:linear-gradient(135deg,#60a5fa 0%,#3b82f6 100%)}
-.pool-title{font-size:13px;opacity:.95;margin-bottom:8px}
-.pool-amount{font-size:22px;font-weight:700}
-.pool-subtitle{opacity:.8;font-size:12px}
-
-.sub-pool-grid{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
-.sub-pool-card{min-width:150px;padding:14px;border-radius:12px;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.sub-pool-vwce{background:linear-gradient(135deg,#10b981 0%,#059669 100%)}
-.sub-pool-cndx{background:linear-gradient(135deg,#34d399 0%,#10b981 100%)}
-.sub-pool-btc{background:linear-gradient(135deg,#6ee7b7 0%,#34d399 100%)}
-.sub-pool-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.sub-pool-name{font-size:14px;font-weight:600}
-.sub-pool-amount{font-size:18px;font-weight:700;margin-bottom:6px}
-.sub-pool-stats{font-size:12px;line-height:1.6}
-.summary-line{color:#6b7280;font-size:13px;padding-top:12px;border-top:1px solid #eef2ff;margin-top:8px;text-align:center}
-
-.card-title{font-size:16px;font-weight:700;color:#111;margin-bottom:12px}
-.transaction-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f3f4f6}
-.transaction-left{display:flex;align-items:center;gap:12px}
-.transaction-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center}
-.icon-green{background:#d1fae5;color:#10b981}
-.icon-red{background:#fee2e2;color:#ef4444}
-.icon-orange{background:#feedda;color:#f97316}
-.transaction-info{flex:1}
-.transaction-desc{font-weight:600;color:#111;margin-bottom:4px}
-.transaction-date{font-size:12px;color:#9ca3af}
-.transaction-amount{font-weight:700;font-size:16px}
-.amount-green{color:#10b981}
-.amount-red{color:#ef4444}
-.amount-orange{color:#f97316}
-
-.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.type-btn{padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
-.active-green{background:#10b981;color:#fff;box-shadow:0 6px 18px rgba(16,185,129,.12)}
-.active-red{background:#ef4444;color:#fff;box-shadow:0 6px 18px rgba(239,68,68,.12)}
-.inactive{background:#f3f4f6;color:#6b7280}
-
-.label{display:block;font-weight:700;color:#374151;margin-bottom:8px}
-.amount-input-wrapper{position:relative}
-.amount-symbol{position:absolute;left:12px;top:12px;font-size:18px;color:#9ca3af}
-.amount-input{padding-left:40px;font-size:18px;padding:12px;border:2px solid #eef2ff;border-radius:10px;width:100%}
-
-.quick-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.quick-btn{padding:10px;border:2px solid #e5e7eb;background:#fff;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
-.quick-btn:active{transform:scale(.98)}
-.quick-btn-vwce{border-color:#10b981;color:#10b981}
-.quick-btn-cndx{border-color:#34d399;color:#059669}
-.quick-btn-btc{border-color:#6ee7b7;color:#047857}
-
-.bottom-nav{position:fixed;bottom:8px;left:0;right:0;max-width:760px;margin:0 auto;background:#fff;border-top:1px solid #e5e7eb;box-shadow:0 -6px 18px rgba(0,0,0,.04);display:grid;grid-template-columns:repeat(5,1fr);padding:8px;gap:6px;border-radius:12px}
-.nav-btn{display:flex;flex-direction:column;align-items:center;padding:8px;border:none;background:none;border-radius:8px;cursor:pointer;color:#9ca3af}
-.nav-btn.active{background:#eef2ff;color:var(--accent)}
-.nav-label{font-size:11px;margin-top:4px}
-
-.history-card{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.history-content{display:flex;justify-content:space-between}
-.history-left{display:flex;gap:12px;flex:1}
-.history-details{flex:1}
-.history-title{font-weight:700;color:#111;margin-bottom:4px}
-.history-meta{font-size:12px;color:#9ca3af;margin-top:4px}
-.delete-btn{background:none;border:none;color:#9ca3af;cursor:pointer;padding:8px}
-.delete-btn:hover{color:#ef4444}
-
-.info-box{background:#dbeafe;border:1px solid #93c5fd;border-radius:12px;padding:12px;margin-bottom:12px}
-.info-text{color:#1e40af;line-height:1.6}
-
-.form-row{margin-bottom:10px}
-.btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:16px;font-weight:700;cursor:pointer}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-green{background:#10b981;color:#fff}
-.btn-red{background:#ef4444;color:#fff}
-.btn-orange{background:#f97316;color:#fff}
-
-.empty-state{text-align:center;padding:24px;color:#9ca3af}
-.muted{color:#6b7280}
-
-/* small responsiveness */
-@media(min-width:900px){.container{padding-top:20px}.content{padding-bottom:140px}}
-</style>
+            `;
+        }
+        
+        function togglePassword() {
+            state.showPassword = !state.showPassword;
+            render();
+        }
+        
+        function setPage(page) {
+            state.currentPage = page;
+            render();
+        }
+        
+        function setRecordType(type) {
+            state.recordType = type;
+            render();
+        }
+        
+        function updateSelectedPool(pool) {
+            state.selectedPool = pool;
+        }
+        
+        function updateCorrectionPool(pool) {
+            state.correctionPool = pool;
+        }
+        
+        function quickExpense() {
+            state.recordType = 'expense';
+            state.currentPage = 'add';
+            render();
+        }
+        
+        function fillQuick(asset) {
+            const action = state.recordType === 'income' ? '卖出' : '买入';
+            state.description = `${action} ${asset}`;
+            render();
+            setTimeout(() => {
+                const amountInput = document.getElementById('amountInput');
+                if (amountInput) amountInput.focus();
+            }, 100);
+        }
+        
+        loadData();
+        render();
+    </script>
+</body>
+</html>
