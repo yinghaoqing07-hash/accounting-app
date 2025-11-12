@@ -489,6 +489,16 @@
             color: white;
         }
         
+        .quick-btn-vwce.expense-mode {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .quick-btn-vwce.expense-mode:hover {
+            background: #ef4444;
+            color: white;
+        }
+        
         .quick-btn-cndx {
             border-color: #34d399;
             color: #059669;
@@ -499,7 +509,35 @@
             color: white;
         }
         
+        .quick-btn-cndx.expense-mode {
+            border-color: #f87171;
+            color: #dc2626;
+        }
+        
+        .quick-btn-cndx.expense-mode:hover {
+            background: #f87171;
+            color: white;
+        }
+        
         .quick-btn-btc {
+            border-color: #6ee7b7;
+            color: #047857;
+        }
+        
+        .quick-btn-btc:hover {
+            background: #6ee7b7;
+            color: white;
+        }
+        
+        .quick-btn-btc.expense-mode {
+            border-color: #fca5a5;
+            color: #b91c1c;
+        }
+        
+        .quick-btn-btc.expense-mode:hover {
+            background: #fca5a5;
+            color: white;
+        }c {
             border-color: #6ee7b7;
             color: #047857;
         }
@@ -1013,13 +1051,13 @@
                         <div style="margin-bottom:16px;">
                             <label class="label">快捷操作</label>
                             <div class="quick-buttons">
-                                <button class="quick-btn quick-btn-vwce" onclick="fillQuick('VWCE')">
+                                <button class="quick-btn quick-btn-vwce ${state.recordType === 'expense' ? 'expense-mode' : ''}" onclick="fillQuick('VWCE')">
                                     ${state.recordType === 'income' ? '卖出' : '买入'} VWCE
                                 </button>
-                                <button class="quick-btn quick-btn-cndx" onclick="fillQuick('CNDX')">
+                                <button class="quick-btn quick-btn-cndx ${state.recordType === 'expense' ? 'expense-mode' : ''}" onclick="fillQuick('CNDX')">
                                     ${state.recordType === 'income' ? '卖出' : '买入'} CNDX
                                 </button>
-                                <button class="quick-btn quick-btn-btc" onclick="fillQuick('BTC')">
+                                <button class="quick-btn quick-btn-btc ${state.recordType === 'expense' ? 'expense-mode' : ''}" onclick="fillQuick('BTC')">
                                     ${state.recordType === 'income' ? '卖出' : '买入'} BTC
                                 </button>
                             </div>
